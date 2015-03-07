@@ -1,5 +1,0 @@
----
-- name: apache reload
-	service: >
-		name={{ apache_deamon }}
-		state=reloaded

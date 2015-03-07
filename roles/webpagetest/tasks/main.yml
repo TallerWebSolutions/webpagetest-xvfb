@@ -12,10 +12,10 @@
     copy=no
 
 - name: copy www directory
-  copy: >
-    src=/tmp/webpagetest-WebPageTest-{{ wpt_version }}/www
-    dest=/var/www/webpagetest
-    owner={{ www_owner }} group={{ www_group }}
+  shell: >
+    rsync -ci /tmp/webpagetest-WebPageTest-{{ wpt_version }}/www /var/www/webpagetest
+  args:
+    creates: /var/www/webpagetest
 
 - name: Ensure apache writable
   command: "chown -R {{ www_owner }}:{{ www_group }} /var/www/webpagetest"

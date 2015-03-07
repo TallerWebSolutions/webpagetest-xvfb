@@ -3,3 +3,4 @@ webpagetest_agent_packages:
   - git
   - nodejs
   - npm
+  - xvfb

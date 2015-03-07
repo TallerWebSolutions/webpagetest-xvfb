@@ -3,3 +3,8 @@ webpagetest_agent_packages:
   - git
   - nodejs
   - npm
+  - xvfb
+  - libxss1
+  - libappindicator1
+  - libindicator7
+  - google-chrome-stable
