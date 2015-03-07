@@ -20,6 +20,21 @@
 - name: Ensure apache writable
   command: "chown -R {{ www_owner }}:{{ www_group }} /var/www/webpagetest"
 
+- name: "Ensure writable folders exist."
+  file: >
+    path=/var/www/webpagetest/{{ item }}
+    owner={{ www_owner }}
+    group={{ www_group }}
+    state=directory
+    mode=770
+  with_items:
+    - tmp
+    - dat
+    - results
+    - work/jobs
+    - work/video
+    - logs
+
 - name: "Configure new VHost for the webpagetest."
   template: >
     src=vhost.j2

@@ -4,11 +4,14 @@
 
   <Directory /var/www/webpagetest/>
     Options +Indexes +FollowSymLinks +MultiViews +Includes
-    AllowOverride None
+    AllowOverride All
     Order allow,deny
     allow from all
   </Directory>
 
+  php_value post_max_size 50M
+  php_value upload_max_filesize 50M
+  php_value memory_limit 512M
 
   ErrorLog /var/log/apache2/webpagetest-error.log
 

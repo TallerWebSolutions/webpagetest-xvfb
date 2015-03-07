@@ -2,9 +2,15 @@
 webpagetest_agent_packages:
   - git
   - nodejs
-  - npm
   - xvfb
   - libxss1
   - libappindicator1
   - libindicator7
+  - libavfilter2
+  - libavfilter-extra-2
+  - libavcodec-extra-53
+  - libavformat53
+  - libavformat-extra-53
+  - libswscale2
+  - libswscale-extra-2
   - google-chrome-stable

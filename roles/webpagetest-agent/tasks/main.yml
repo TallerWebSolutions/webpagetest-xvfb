@@ -36,6 +36,17 @@
 ##
 
 # DEBIAN
+- name: be sure apt software properties is installed
+  apt: >
+    name=python-software-properties
+    state=present
+  when: ansible_os_family == 'Debian'
+
+- name: Add Newest nodejs repository.
+  apt_repository: >
+    repo='ppa:chris-lea/node.js'
+  when: ansible_os_family == 'Debian'
+
 - name: Add Google apt key.
   apt_key: >
     url=https://dl-ssl.google.com/linux/linux_signing_key.pub
@@ -51,7 +62,8 @@
 - name: be sure apt packages are installed
   apt: >
     name={{ item }}
-    state=present
+    state=latest
+    update-cache=yes
   with_items: webpagetest_agent_packages
   when: ansible_os_family == 'Debian'
 ## 
