@@ -1,0 +1,37 @@
+#!/bin/sh
+
+#
+# chkconfig: 35 99 99
+# description: Node.js /opt/kookel/r8_perf/app.js
+#
+
+USER="{{ www_owner }}"
+
+DAEMON="/usr/bin/node"
+
+ROOT_DIR="/opt/webpagetest/agent/js"
+LOG_FILE_CHROME="$ROOT_DIR/agent.log"
+COMMAND="DISPLAY=:99 $ROOT_DIR/wptdriver.sh -s http://{{ host_name }}:{{ port_no }} -l Chrome -m debug >>$LOG_FILE_CHROME 2>&1 &"
+PIDFILE=/var/run/webpagetest-agent.pid
+
+case "$1" in
+  start)
+    echo -n "Starting Webpagetest agent."
+    start-stop-daemon --start --quiet --pidfile $PIDFILE --make-pidfile --background --exec $COMMAND
+    echo "."
+    ;;
+  stop)
+    echo -n "Stopping Webpagetest agent."
+    start-stop-daemon --stop --quiet --pidfile $PIDFILE
+    echo "."
+    ;;
+  restart)
+    $0 stop
+    $0 start
+    ;;
+  *)
+        echo "Usage: /etc/init.d/webpagetest-agent {start|stop|restart}"
+        exit 1
+esac
+ 
+exit 0
