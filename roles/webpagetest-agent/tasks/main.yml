@@ -1,25 +1,36 @@
+- name: Include OS-specific variables.
+  include_vars: "{{ ansible_os_family }}.yaml"
+
 - name: Ensure EPEL repo is installed
   get_url: url=http://dl.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch.rpm dest=/tmp/epel-release-6-8.noarch.rpm
+  when: ansible_os_family == 'RedHat'
 
 - name: Ensure EPEL repo is installed
   ignore_errors: yes
   command: rpm -Uvh /tmp/epel-release-6-8.noarch.rpm
+  when: ansible_os_family == 'RedHat'
 
 - name: be sure yum packages are installed
   yum: >
     name={{ item }}
     state=present
-  with_items:
-    - git
-    - nodejs
-    - npm
+  with_items: webpagetest_agent_packages
+  when: ansible_os_family == 'RedHat'
+
+- name: be sure apt packages are installed
+  apt: >
+    name={{ item }}
+    state=present
+  with_items: webpagetest_agent_packages
+  when: ansible_os_family == 'Debian'
 
 - name: Checkout webpagetest repo
-  git: repo=https://github.com/WPO-Foundation/webpagetest.git
-       dest=/opt/webpagetest
+  git: >
+    repo=https://github.com/WPO-Foundation/webpagetest.git
+    dest=/opt/webpagetest
 
 - name: Ensure correct ownership webpagetest repo
-  command: chown -R {{ user }}:{{ user }} /opt/webpagetest
+  command: "chown -R {{ www_owner }}:{{ www_group }} /opt/webpagetest"
 
 - name: Install Chrome - Download Richard Lloyd script
   get_url: url=http://chrome.richardlloyd.org.uk/install_chrome.sh dest=/tmp/install_chrome.sh
@@ -46,7 +57,9 @@
   service: name=xvfb state=started
 
 - name: Copy locations.ini
-  template: src=locations.ini.j2 dest=/var/www/webpagetest/settings/locations.ini owner=apache group=apache
+  template: >
+    src=locations.ini.j2 dest=/var/www/webpagetest/settings/locations.ini
+    owner={{ www_owner }} group={{ www_group }}
 
 - name: Copy agent init.d script
   template: src=agent-init.d.j2 dest=/etc/init.d/webpagetest-agent

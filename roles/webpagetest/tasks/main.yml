@@ -1,13 +1,33 @@
+---
 - name: download webpagetest
   get_url: >
-    url=https://github.com/WPO-Foundation/webpagetest/releases/download/WebPagetest-{{ wpt_version }}/webpagetest_{{ wpt_version }}.zip
+    url=https://github.com/WPO-Foundation/webpagetest/archive/WebPageTest-{{ wpt_version }}.zip
     dest=/tmp/webpagetest_{{ wpt_version }}.zip
 
 - name: extract chromedriver from archive
-  command: unzip -o /tmp/webpagetest_{{ wpt_version }}.zip -d /tmp/webpagetest_{{ wpt_version }}
+  # command: "unzip -o /tmp/webpagetest_{{ wpt_version }}.zip -d /tmp/webpagetest_{{ wpt_version }}"
+  unarchive: >
+    src=/tmp/webpagetest_{{ wpt_version }}.zip
+    dest=/tmp/
+    copy=no
 
 - name: copy www directory
-  shell: cp -r /tmp/webpagetest_{{ wpt_version }}/www/* /var/www/webpagetest/
+  copy: >
+    src=/tmp/webpagetest-WebPageTest-{{ wpt_version }}/www
+    dest=/var/www/webpagetest
+    owner={{ www_owner }} group={{ www_group }}
 
 - name: Ensure apache writable
-  command: chown -R apache:apache /var/www/webpagetest
+  command: "chown -R {{ www_owner }}:{{ www_group }} /var/www/webpagetest"
+
+- name: "Configure new VHost for the webpagetest."
+  template: >
+    src=vhost.j2
+    dest=/etc/apache2/sites-available/{{ host_name }}
+
+- name: "Enabling the new vhost for webpagetest."
+  command: >
+    /usr/sbin/a2ensite {{ host_name }}
+    creates=/etc/apache2/sites-enabled/{{ host_name }}
+  notify:
+    - apache reload

@@ -1,0 +1,20 @@
+<VirtualHost *:{{ port_no }}>
+  DocumentRoot /var/www/webpagetest/
+  ServerName {{ host_name }}
+
+  <Directory /var/www/webpagetest/>
+    Options +Indexes +FollowSymLinks +MultiViews +Includes
+    AllowOverride None
+    Order allow,deny
+    allow from all
+  </Directory>
+
+
+  ErrorLog /var/log/apache2/webpagetest-error.log
+
+  # Possible values include: debug, info, notice, warn, error, crit,
+  # alert, emerg.
+  LogLevel warn
+  CustomLog /var/log/apache2/webpagetest-access.log combined
+
+</VirtualHost>
