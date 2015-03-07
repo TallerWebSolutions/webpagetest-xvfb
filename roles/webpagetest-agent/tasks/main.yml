@@ -81,7 +81,9 @@
     owner={{ www_owner }} group={{ www_group }}
 
 - name: Copy agent init.d script
-  template: src=agent-init.d.j2 dest=/etc/init.d/webpagetest-agent
+  template: >
+    src=agent-init.d-{{ ansible_os_family }}.j2
+    dest=/etc/init.d/webpagetest-agent
 
 - name: webpagetest-agent init.d script - ensure script is executable
   command: chmod +x /etc/init.d/webpagetest-agent

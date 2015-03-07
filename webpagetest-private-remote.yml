@@ -2,7 +2,7 @@
   sudo: yes
   vars:
     host_name: wpt.padumts.dropit.in
-    port_no: 8080
+    port_no: 80
     wpt_version: 2.16
     www_owner: padumts
     www_group: www-data
